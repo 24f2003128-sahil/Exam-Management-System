@@ -1,0 +1,97 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Create Exam Slot</h2>
+    <p class="text-muted">
+        Creating a slot as {{ examiner.name }}
+    </p>
+
+    {% if examinations %}
+    <form method="POST">
+
+        <div class="mb-3">
+            <label for="examination_id" class="form-label">
+                Examination
+            </label>
+            <select
+                class="form-select"
+                id="examination_id"
+                name="examination_id"
+                required>
+                <option value="">Select examination</option>
+                {% for exam in examinations %}
+                <option value="{{ exam.id }}">
+                    {{ exam.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="date" class="form-label">Exam Date</label>
+            <input
+                type="date"
+                class="form-control"
+                id="date"
+                name="date"
+                required>
+        </div>
+
+        <div class="mb-3">
+            <label for="start_time" class="form-label">Start Time</label>
+            <input
+                type="time"
+                class="form-control"
+                id="start_time"
+                name="start_time"
+                required>
+        </div>
+
+        <div class="mb-3">
+            <label for="end_time" class="form-label">End Time</label>
+            <input
+                type="time"
+                class="form-control"
+                id="end_time"
+                name="end_time"
+                required>
+        </div>
+
+        <div class="mb-3">
+            <label for="capacity" class="form-label">
+                Student Capacity
+            </label>
+            <input
+                type="number"
+                class="form-control"
+                id="capacity"
+                name="capacity"
+                min="1"
+                required>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Create Slot
+        </button>
+
+        <a href="{{ url_for('examiner_dashboard') }}"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+    </form>
+
+    {% else %}
+    <div class="alert alert-info">
+        No examinations are currently accepting slot creation.
+        Please check the examination timelines with the admin.
+    </div>
+
+    <a href="{{ url_for('examiner_dashboard') }}"
+       class="btn btn-secondary">
+        Back to Dashboard
+    </a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Exam Slot #{{ slot.id }}</h2>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label" for="date">Exam Date</label>
+            <input
+                type="date"
+                class="form-control"
+                id="date"
+                name="date"
+                value="{{ slot.date.strftime('%Y-%m-%d') }}"
+                required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="start_time">Start Time</label>
+            <input
+                type="time"
+                class="form-control"
+                id="start_time"
+                name="start_time"
+                value="{{ slot.start_time.strftime('%H:%M') }}"
+                required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="end_time">End Time</label>
+            <input
+                type="time"
+                class="form-control"
+                id="end_time"
+                name="end_time"
+                value="{{ slot.end_time.strftime('%H:%M') }}"
+                required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="capacity">Student Capacity</label>
+            <input
+                type="number"
+                class="form-control"
+                id="capacity"
+                name="capacity"
+                min="1"
+                value="{{ slot.capacity }}"
+                required>
+        </div>
+
+        <p>Currently available seats: {{ slot.available_seats }}</p>
+
+        <button type="submit" class="btn btn-success">
+            Save Changes
+        </button>
+
+        <a href="{{ url_for('examiner_dashboard') }}"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

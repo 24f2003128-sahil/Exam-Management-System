@@ -1,0 +1,105 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <a href="{{ url_for(
+        'examiner_slot_students',
+        slot_id=booking.slot_id
+    ) }}" class="btn btn-outline-secondary mb-3">
+        Back to Students
+    </a>
+
+    <h2>Evaluate Student</h2>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5>{{ booking.student.name }}</h5>
+
+            <p class="mb-1">
+                <strong>Email:</strong> {{ booking.student.email }}
+            </p>
+
+            <p class="mb-1">
+                <strong>Examination:</strong>
+                {{ booking.slot.examination.name }}
+            </p>
+
+            <p class="mb-0">
+                <strong>Maximum Marks:</strong>
+                {{ booking.slot.examination.max_marks }}
+            </p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Evaluation Rubrics</h5>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% for rubric in rubrics %}
+
+                <div class="border rounded p-3 mb-3">
+
+                    <h5>{{ loop.index }}. {{ rubric.criteria_name }}</h5>
+
+                    <p class="text-muted">
+                        {{ rubric.description or "No description provided." }}
+                    </p>
+
+                    <p>
+                        <strong>Maximum Marks:</strong>
+                        {{ rubric.max_marks }}
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Marks Obtained
+                        </label>
+
+                        <input
+                            type="number"
+                            name="marks_{{ rubric.id }}"
+                            class="form-control"
+                            min="0"
+                            max="{{ rubric.max_marks }}"
+                            step="0.01"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">
+                            Remarks / Feedback
+                        </label>
+
+                        <textarea
+                            name="remarks_{{ rubric.id }}"
+                            class="form-control"
+                            rows="3"
+                            placeholder="Enter feedback for this criterion..."
+                        ></textarea>
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+                <button type="submit" class="btn btn-success">
+                    Submit Evaluation
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,79 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Manage Exam Slots</h2>
+        <a href="{{ url_for('create_exam_slot') }}" class="btn btn-primary">
+            + Create Exam Slot
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if exam_slots %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Examination</th>
+                    <th>Examiner</th>
+                    <th>Date</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Capacity</th>
+                    <th>Available Seats</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for slot in exam_slots %}
+                <tr>
+                    <td>{{ slot.id }}</td>
+                    <td>{{ slot.examination.name }}</td>
+                    <td>{{ slot.examiner.name }}</td>
+                    <td>{{ slot.date.strftime('%d-%m-%Y') }}</td>
+                    <td>{{ slot.start_time.strftime('%H:%M') }}</td>
+                    <td>{{ slot.end_time.strftime('%H:%M') }}</td>
+                    <td>{{ slot.capacity }}</td>
+                    <td>{{ slot.available_seats }}</td>
+                    <td>{{ slot.status }}</td>
+                    
+                    <td>
+                        <a href="{{ url_for('edit_exam_slot', slot_id=slot.id) }}"
+                           class="btn btn-warning btn-sm mb-1">
+                                Edit
+                        </a>
+
+                    <form method="POST"
+                          action="{{ url_for('toggle_exam_slot_status', slot_id=slot.id) }}"
+                          class="d-inline">
+                    <button type="submit"
+                          class="btn btn-sm {% if slot.status == 'Active' %}btn-danger{% else %}btn-success{% endif %}">
+                          {% if slot.status == 'Active' %}Deactivate{% else %}Activate{% endif %}
+                    </button>
+                    </form>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-info">No exam slots found.</div>
+    {% endif %}
+
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+        Back to Dashboard
+    </a>
+</div>
+{% endblock %}

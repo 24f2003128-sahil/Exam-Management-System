@@ -1,0 +1,286 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Manage Examiners
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h1>Manage Examiners</h1>
+
+        <p class="text-muted">
+            Approve, activate and deactivate examiners.
+        </p>
+    </div>
+
+    <a href="{{ url_for('admin_dashboard') }}"
+       class="btn btn-secondary">
+        Back to Dashboard
+    </a>
+
+</div>
+
+
+<!-- Search and Filter Section -->
+
+<div class="card shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <form method="GET" action="{{ url_for('admin_examiners') }}">
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Search Examiner
+                    </label>
+
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control"
+                        placeholder="Enter name or email"
+                        value="{{ search_query }}"
+                    >
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+                        Approval Status
+                    </label>
+
+                    <select name="approval" class="form-select">
+
+                        <option value="">All</option>
+
+                        <option value="approved"
+                            {% if approval_status == "approved" %}selected{% endif %}>
+                            Approved
+                        </option>
+
+                        <option value="pending"
+                            {% if approval_status == "pending" %}selected{% endif %}>
+                            Pending
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+                        Account Status
+                    </label>
+
+                    <select name="active" class="form-select">
+
+                        <option value="">All</option>
+
+                        <option value="active"
+                            {% if active_status == "active" %}selected{% endif %}>
+                            Active
+                        </option>
+
+                        <option value="inactive"
+                            {% if active_status == "inactive" %}selected{% endif %}>
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-2 d-flex align-items-end">
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+                        Search
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <div class="mt-3">
+
+            <a href="{{ url_for('admin_examiners') }}"
+               class="btn btn-outline-secondary btn-sm">
+                Reset Filters
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Examiner Table -->
+
+<div class="table-responsive">
+
+    <table class="table table-bordered table-hover align-middle">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Department</th>
+                <th>Approval</th>
+                <th>Account Status</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for examiner in examiners %}
+
+            <tr>
+
+                <td>{{ examiner.id }}</td>
+
+                <td>{{ examiner.name }}</td>
+
+                <td>{{ examiner.email }}</td>
+
+                <td>{{ examiner.phone }}</td>
+
+                <td>{{ examiner.department }}</td>
+
+
+                <td>
+
+                    {% if examiner.approved %}
+
+                        <span class="badge bg-success">
+                            Approved
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-warning text-dark">
+                            Pending
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+
+                <td>
+
+                    {% if examiner.active %}
+
+                        <span class="badge bg-success">
+                            Active
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger">
+                            Inactive
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+
+                <td>
+
+                    {% if not examiner.approved %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('approve_examiner', examiner_id=examiner.id) }}"
+                            class="d-inline"
+                        >
+
+                            <button type="submit"
+                                    class="btn btn-success btn-sm">
+                                Approve
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+
+                    {% if examiner.active %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('deactivate_examiner', examiner_id=examiner.id) }}"
+                            class="d-inline"
+                        >
+
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm">
+                                Deactivate
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('activate_examiner', examiner_id=examiner.id) }}"
+                            class="d-inline"
+                        >
+
+                            <button type="submit"
+                                    class="btn btn-warning btn-sm">
+                                Activate
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="8"
+                    class="text-center text-muted">
+
+                    No examiners found.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

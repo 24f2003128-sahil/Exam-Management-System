@@ -1,0 +1,76 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <h2>Create Exam Slot</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if examinations and examiners %}
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Examination</label>
+            <select name="examination_id" class="form-select" required>
+                <option value="">Select examination</option>
+                {% for exam in examinations %}
+                <option value="{{ exam.id }}">
+                    {{ exam.name }} — {{ exam.course.course_code }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Examiner</label>
+            <select name="examiner_id" class="form-select" required>
+                <option value="">Select examiner</option>
+                {% for examiner in examiners %}
+                <option value="{{ examiner.id }}">
+                    {{ examiner.name }} — {{ examiner.department }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Exam Date</label>
+            <input type="date" name="date" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Start Time</label>
+            <input type="time" name="start_time" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">End Time</label>
+            <input type="time" name="end_time" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Student Capacity</label>
+            <input type="number" name="capacity" class="form-control"
+                   min="1" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Create Slot</button>
+        <a href="{{ url_for('admin_exam_slots') }}"
+           class="btn btn-secondary">Cancel</a>
+    </form>
+    {% else %}
+        <div class="alert alert-warning">
+            You need at least one published examination and one active,
+            approved examiner before creating a slot.
+        </div>
+        <a href="{{ url_for('admin_examinations') }}"
+           class="btn btn-primary">Manage Examinations</a>
+        <a href="{{ url_for('admin_examiners') }}"
+           class="btn btn-secondary">Manage Examiners</a>
+    {% endif %}
+</div>
+{% endblock %}

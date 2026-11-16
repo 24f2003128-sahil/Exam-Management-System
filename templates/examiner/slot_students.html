@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booked Students</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <a href="{{ url_for('examiner_dashboard') }}"
+       class="btn btn-outline-secondary mb-3">
+        Back to Dashboard
+    </a>
+
+    <h2>Booked Students</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>{{ slot.examination.name }}</h5>
+
+            <p class="mb-1">
+                <strong>Date:</strong> {{ slot.date }}
+            </p>
+
+            <p class="mb-1">
+                <strong>Time:</strong>
+                {{ slot.start_time }} - {{ slot.end_time }}
+            </p>
+
+            <p class="mb-0">
+                <strong>Examiner:</strong> {{ examiner.name }}
+            </p>
+        </div>
+    </div>
+
+    <h4>Students ({{ bookings|length }})</h4>
+
+    {% if bookings %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped bg-white">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Booking Status</th>
+                        <th>Marks</th>
+                        <th>Percentage</th>
+                        <th>Evaluation Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.id }}</td>
+                        <td>{{ booking.student.id }}</td>
+                        <td>{{ booking.student.name }}</td>
+                        <td>{{ booking.student.email }}</td>
+                        <td>{{ booking.student.phone or "Not provided" }}</td>
+                        <td>
+                            <span class="badge bg-success">
+                                {{ booking.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {{ student_results[booking.id].obtained_marks }}
+                            /
+                            {{ student_results[booking.id].total_max_marks }}
+                        </td>
+                        <td>
+                            {% if student_results[booking.id].status == "Completed" %}
+                                {{ "%.2f"|format(student_results[booking.id].percentage) }}%
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if student_results[booking.id].status == "Completed" %}
+                                <span class="badge bg-success">Completed</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if student_results[booking.id].status == "Pending" %}
+                            <a href="{{ url_for(
+                                        'examiner_evaluate_student',
+                                          booking_id=booking.id
+                            ) }}" class="btn btn-success btn-sm">
+                                          Evaluate
+                            </a>
+                            {% else %}
+                                <span class="text-success">Evaluated</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No students have booked this slot yet.
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

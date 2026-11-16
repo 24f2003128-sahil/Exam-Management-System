@@ -1,0 +1,189 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Examination Results</h2>
+
+        <a href="{{ url_for('student_dashboard') }}"
+           class="btn btn-outline-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% set result_count = namespace(value=0) %}
+
+    {% for booking in bookings %}
+        {% if booking.status == "Booked" %}
+            {% set result_count.value = result_count.value + 1 %}
+
+            {% set result = result_data[booking.id] %}
+
+            <div class="card shadow-sm mb-4">
+
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h5 class="mb-0">
+                            {{ booking.slot.examination.name }}
+                        </h5>
+
+                        {% if booking.result_published %}
+                            <span class="badge bg-success">
+                                Result Published
+                            </span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">
+                                Result Pending
+                            </span>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-6">
+                            <p>
+                                <strong>Booking ID:</strong>
+                                {{ booking.id }}
+                            </p>
+
+                            <p>
+                                <strong>Course:</strong>
+                                {{ booking.slot.examination.course.course_name }}
+                            </p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p>
+                                <strong>Examiner:</strong>
+                                {{ booking.slot.examiner.name }}
+                            </p>
+
+                            <p>
+                                <strong>Exam Date:</strong>
+                                {{ booking.slot.date.strftime('%d-%m-%Y') }}
+                            </p>
+                        </div>
+
+                    </div>
+
+                    {% if booking.result_published %}
+
+                        {% if result.completed %}
+
+                            <h6>Rubric-wise Evaluation</h6>
+
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered table-striped">
+
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Criteria</th>
+                                            <th>Maximum Marks</th>
+                                            <th>Marks Obtained</th>
+                                            <th>Examiner Remarks</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        {% for evaluation in result.evaluations %}
+
+                                        <tr>
+                                            <td>
+                                                {{ evaluation.rubric.criteria_name }}
+                                            </td>
+
+                                            <td>
+                                                {{ evaluation.rubric.max_marks }}
+                                            </td>
+
+                                            <td>
+                                                {{ evaluation.marks }}
+                                            </td>
+
+                                            <td>
+                                                {{ evaluation.remarks or "No remarks" }}
+                                            </td>
+                                        </tr>
+
+                                        {% endfor %}
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                            <div class="border rounded p-3 mt-3">
+
+                                <h5>Final Result</h5>
+
+                                <p>
+                                    <strong>Marks Obtained:</strong>
+                                    {{ result.obtained_marks }}
+                                    /
+                                    {{ result.total_max_marks }}
+                                </p>
+
+                                <p>
+                                    <strong>Percentage:</strong>
+                                    {{ "%.2f"|format(result.percentage) }}%
+                                </p>
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="alert alert-warning">
+                                Your result has been published, but the evaluation
+                                details are incomplete. Please contact the admin.
+                            </div>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <div class="alert alert-info mb-0">
+                            Your result has not been published yet.
+                            Please check again later.
+                        </div>
+
+                    {% endif %}
+
+                </div>
+            </div>
+
+        {% endif %}
+    {% endfor %}
+
+    {% if result_count.value == 0 %}
+
+        <div class="alert alert-info">
+            You do not have any active examination bookings yet.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

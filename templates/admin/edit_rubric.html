@@ -1,0 +1,57 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <h2>Edit Rubric</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Examination</label>
+            <select name="examination_id" class="form-select" required>
+                {% for exam in examinations %}
+                <option value="{{ exam.id }}"
+                    {% if exam.id == rubric.examination_id %}selected{% endif %}>
+                    {{ exam.name }} — {{ exam.course.course_code }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Criteria Name</label>
+            <input type="text" name="criteria_name" class="form-control"
+                   maxlength="120" value="{{ rubric.criteria_name }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Maximum Marks</label>
+            <input type="number" name="max_marks" class="form-control"
+                   min="0.01" step="any" value="{{ rubric.max_marks }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Weightage (%)</label>
+            <input type="number" name="weightage" class="form-control"
+                   min="0.01" max="100" step="any"
+                   value="{{ rubric.weightage }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control"
+                      rows="3">{{ rubric.description or '' }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a href="{{ url_for('admin_rubrics') }}"
+           class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

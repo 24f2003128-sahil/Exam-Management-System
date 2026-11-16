@@ -1,0 +1,205 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Dashboard Heading -->
+    <div class="mb-4">
+        <h2>Examiner Dashboard</h2>
+        <p class="text-muted">
+            Welcome, {{ examiner.name }}!
+        </p>
+    </div>
+
+    <!-- Dashboard Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">My Exam Slots</h6>
+                    <h2>{{ total_slots }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Booked Students</h6>
+                    <h2>{{ total_booked_students }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Pending Evaluations</h6>
+                    <h2>{{ pending_evaluations }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- My Examination Slots -->
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0">My Examination Slots</h5>
+
+                <a href="{{ url_for('examiner_create_exam_slot') }}"
+                   class="btn btn-success btn-sm">
+                    Create Exam Slot
+                </a>
+
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-striped">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Examination</th>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Capacity</th>
+                            <th>Available Seats</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for slot in exam_slots %}
+
+                        <tr>
+
+                            <td>{{ slot.examination.name }}</td>
+
+                            <td>
+                                {{ slot.date.strftime('%d-%m-%Y') }}
+                            </td>
+
+                            <td>
+                                {{ slot.start_time.strftime('%H:%M') }}
+                            </td>
+
+                            <td>
+                                {{ slot.end_time.strftime('%H:%M') }}
+                            </td>
+
+                            <td>{{ slot.capacity }}</td>
+
+                            <td>{{ slot.available_seats }}</td>
+
+                            <td>{{ slot.status }}</td>
+
+                            <!-- Actions -->
+                            <td>
+
+                                {% if slot.status == "Active" or slot.status == "Full" %}
+
+                                    <!-- View Booked Students -->
+                                    <a href="{{ url_for(
+                                        'examiner_slot_students',
+                                        slot_id=slot.id
+                                    ) }}"
+                                       class="btn btn-sm btn-primary mb-1">
+
+                                        View Booked Students
+
+                                    </a>
+
+                                    <!-- Edit and Remove -->
+                                    {% if slot.status == "Active"
+                                          and slot.examination.booking_start > now
+                                          and slot.available_seats == slot.capacity %}
+
+                                        <a href="{{ url_for(
+                                            'examiner_edit_exam_slot',
+                                            slot_id=slot.id
+                                        ) }}"
+                                           class="btn btn-sm btn-primary mb-1">
+
+                                            Edit
+
+                                        </a>
+
+                                        <form method="POST"
+                                              action="{{ url_for(
+                                                  'examiner_delete_exam_slot',
+                                                  slot_id=slot.id
+                                              ) }}"
+                                              onsubmit="return confirm('Remove this exam slot?');"
+                                              style="display:inline;">
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger mb-1">
+
+                                                Remove
+
+                                            </button>
+
+                                        </form>
+
+                                    {% endif %}
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        Unavailable
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="8" class="text-center">
+                                You do not have any examination slots yet.
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Logout -->
+    <div class="mt-3">
+
+        <a href="{{ url_for('logout') }}"
+           class="btn btn-outline-danger">
+
+            Logout
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

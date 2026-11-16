@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}
+Home - Examination Management System 
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center mt-5 ">
+    <h1> Examination Slot Booking & Evaluation System </h1>
+
+    <p class="lead mt-3 ">
+        Manage Eaxamination Slot bookings and evalautions 
+    </p>
+    {% if not session.get('role') %}
+        <a  
+            class="btn btn-primary btn-lg me-2"
+            href="{{ url_for('login') }}"
+            >
+            Login
+        </a>
+        <a  
+            class="btn btn-success btn-lg"
+            href="{{ url_for('register_student') }}"
+            >
+            Student Register
+        </a>
+    {% endif %}
+
+</div>
+{% endblock %}

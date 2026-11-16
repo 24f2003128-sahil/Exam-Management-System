@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h1>Admin Dashboard</h1>
+        <p class="text-muted mb-0">
+            Examination Management System Administration
+        </p>
+    </div>
+
+    <a
+        href="{{ url_for('admin_examiners') }}"
+        class="btn btn-primary"
+    >
+        Manage Examiners
+    </a>
+
+</div>
+
+
+<div class="row g-4">
+
+
+    <!-- COURSES -->
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body text-center">
+
+                <h5 class="card-title">
+                    Total Courses
+                </h5>
+
+                <h2 class="display-6">
+                    {{ total_courses }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- EXAMINATIONS -->
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body text-center">
+
+                <h5 class="card-title">
+                    Total Examinations
+                </h5>
+
+                <h2 class="display-6">
+                    {{ total_examinations }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- EXAMINERS -->
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body text-center">
+
+                <h5 class="card-title">
+                    Total Examiners
+                </h5>
+
+                <h2 class="display-6">
+                    {{ total_examiners }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- STUDENTS -->
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body text-center">
+
+                <h5 class="card-title">
+                    Total Students
+                </h5>
+
+                <h2 class="display-6">
+                    {{ total_students }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SLOTS -->
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body text-center">
+
+                <h5 class="card-title">
+                    Total Exam Slots
+                </h5>
+
+                <h2 class="display-6">
+                    {{ total_slots }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOOKINGS -->
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body text-center">
+
+                <h5 class="card-title">
+                    Total Bookings
+                </h5>
+
+                <h2 class="display-6">
+                    {{ total_bookings }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<hr class="my-5">
+
+
+<h3 class="mb-3">
+    Admin Actions
+</h3>
+
+
+<div class="d-flex flex-wrap gap-2">
+
+    <a href="{{ url_for('admin_examiners') }}"
+       class="btn btn-primary">
+        Manage Examiners
+    </a>
+
+    <a href="{{ url_for('admin_courses') }}"
+       class="btn btn-primary">
+        Manage Courses
+    </a>
+
+
+
+    <a href="{{ url_for('admin_examinations') }}"
+       class="btn btn-primary">
+        Manage Examinations
+    </a>
+
+
+    <a href="{{ url_for('admin_rubrics') }}"
+       class="btn btn-primary">
+        Manage Rubrics
+    </a>
+
+    
+
+    <a href="{{ url_for('admin_students') }}"
+       class="btn btn-primary">
+        View Students
+    </a>
+
+    <a href="{{ url_for('admin_exam_slots') }}"
+       class="btn btn-primary">
+        View Exam Slots
+    </a>
+    <a href="{{ url_for('admin_results') }}"
+        class="btn btn-primary">
+         Result Management
+    </a>
+
+    
+    <a href="{{ url_for('admin_view_bookings') }}"
+        class="btn btn-primary">
+         View Bookings
+    </a>
+
+
+</div>
+
+{% endblock %}

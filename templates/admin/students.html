@@ -1,0 +1,159 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Registered Students</h2>
+
+        <a href="{{ url_for('admin_dashboard') }}"
+           class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Search Form -->
+    <form method="GET"
+          action="{{ url_for('admin_students') }}"
+          class="mb-4">
+
+        <div class="input-group">
+
+            <input type="text"
+                   name="search"
+                   class="form-control"
+                   placeholder="Search by student name or email"
+                   value="{{ search }}">
+
+            <button type="submit" class="btn btn-primary">
+                Search
+            </button>
+
+            <a href="{{ url_for('admin_students') }}"
+               class="btn btn-outline-secondary">
+                Clear
+            </a>
+
+        </div>
+    </form>
+
+    <!-- Student Count -->
+    <p>
+        <strong>Students found:</strong> {{ students|length }}
+    </p>
+
+    <!-- Students Table -->
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-striped table-hover align-middle">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Age</th>
+                    <th>Department</th>
+                    <th>Registered On</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for student in students %}
+
+                <tr>
+
+                    <td>{{ student.id }}</td>
+
+                    <td>{{ student.name }}</td>
+
+                    <td>{{ student.email }}</td>
+
+                    <td>{{ student.phone or '-' }}</td>
+
+                    <td>
+                        {{ student.age if student.age is not none else '-' }}
+                    </td>
+
+                    <td>{{ student.department or '-' }}</td>
+
+                    <td>
+                        {% if student.created_at %}
+                            {{ student.created_at.strftime('%d-%m-%Y %I:%M %p') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <!-- Student Status -->
+                    <td>
+                        {% if student.blacklisted %}
+                            <span class="badge bg-danger">
+                                Blocked
+                            </span>
+                        {% else %}
+                            <span class="badge bg-success">
+                                Active
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Actions -->
+                    <td>
+
+                        <form method="POST"
+                              action="{{ url_for('admin_toggle_student_status', student_id=student.id) }}">
+
+                            {% if student.blacklisted %}
+
+                                <button type="submit"
+                                        class="btn btn-sm btn-success">
+                                    Activate
+                                </button>
+
+                            {% else %}
+
+                                <button type="submit"
+                                        class="btn btn-sm btn-danger">
+                                    Deactivate
+                                </button>
+
+                            {% endif %}
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="9" class="text-center py-4">
+
+                        {% if search %}
+                            No students found matching "{{ search }}".
+                        {% else %}
+                            No students registered yet.
+                        {% endif %}
+
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

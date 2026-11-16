@@ -1,0 +1,93 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <h2>Create Examination</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if courses %}
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Course</label>
+            <select name="course_id" class="form-select" required>
+                <option value="">Select course</option>
+                {% for course in courses %}
+                <option value="{{ course.id }}">
+                    {{ course.course_code }} - {{ course.course_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Examination Name</label>
+            <input type="text" name="name" class="form-control"
+                   maxlength="100" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Examination Type</label>
+            <input type="text" name="exam_type" class="form-control"
+                   maxlength="40" placeholder="e.g. Viva, Practical, Theory" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Duration (minutes)</label>
+            <input type="number" name="duration" class="form-control"
+                   min="1" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Maximum Marks</label>
+            <input type="number" name="max_marks" class="form-control"
+                   min="0.01" step="any" required>
+        </div>
+
+        <h5 class="mt-4">Slot Creation Timeline</h5>
+
+        <div class="mb-3">
+            <label class="form-label">Slot Creation Start</label>
+            <input type="datetime-local" name="slot_creation_start"
+                   class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Slot Creation End</label>
+            <input type="datetime-local" name="slot_creation_end"
+                   class="form-control" required>
+        </div>
+
+        <h5 class="mt-4">Booking Timeline</h5>
+
+        <div class="mb-3">
+            <label class="form-label">Booking Start</label>
+            <input type="datetime-local" name="booking_start"
+                   class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Booking End</label>
+            <input type="datetime-local" name="booking_end"
+                   class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Create Examination</button>
+        <a href="{{ url_for('admin_examinations') }}"
+           class="btn btn-secondary">Cancel</a>
+    </form>
+    {% else %}
+        <div class="alert alert-warning">
+            No active courses found. Create or activate a course first.
+        </div>
+        <a href="{{ url_for('admin_courses') }}" class="btn btn-primary">
+            Manage Courses
+        </a>
+    {% endif %}
+</div>
+{% endblock %}

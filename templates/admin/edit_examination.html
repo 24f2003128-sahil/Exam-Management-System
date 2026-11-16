@@ -1,0 +1,92 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <h2>Edit Examination</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Course</label>
+            <select name="course_id" class="form-select" required>
+                {% for course in courses %}
+                <option value="{{ course.id }}"
+                    {% if course.id == examination.course_id %}selected{% endif %}>
+                    {{ course.course_code }} - {{ course.course_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Examination Name</label>
+            <input type="text" name="name" class="form-control"
+                   maxlength="100" value="{{ examination.name }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Examination Type</label>
+            <input type="text" name="exam_type" class="form-control"
+                   maxlength="40" value="{{ examination.exam_type }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Duration (minutes)</label>
+            <input type="number" name="duration" class="form-control"
+                   min="1" value="{{ examination.duration }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Maximum Marks</label>
+            <input type="number" name="max_marks" class="form-control"
+                   min="0.01" step="any" value="{{ examination.max_marks }}" required>
+        </div>
+
+        <h5 class="mt-4">Slot Creation Timeline</h5>
+
+        <div class="mb-3">
+            <label class="form-label">Slot Creation Start</label>
+            <input type="datetime-local" name="slot_creation_start"
+                   class="form-control"
+                   value="{{ examination.slot_creation_start.strftime('%Y-%m-%dT%H:%M') }}"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Slot Creation End</label>
+            <input type="datetime-local" name="slot_creation_end"
+                   class="form-control"
+                   value="{{ examination.slot_creation_end.strftime('%Y-%m-%dT%H:%M') }}"
+                   required>
+        </div>
+
+        <h5 class="mt-4">Booking Timeline</h5>
+
+        <div class="mb-3">
+            <label class="form-label">Booking Start</label>
+            <input type="datetime-local" name="booking_start"
+                   class="form-control"
+                   value="{{ examination.booking_start.strftime('%Y-%m-%dT%H:%M') }}"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Booking End</label>
+            <input type="datetime-local" name="booking_end"
+                   class="form-control"
+                   value="{{ examination.booking_end.strftime('%Y-%m-%dT%H:%M') }}"
+                   required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a href="{{ url_for('admin_examinations') }}"
+           class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
